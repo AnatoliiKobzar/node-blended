@@ -1,4 +1,10 @@
 const express = require('express');
+const validateBody = require('../Utils/validateBody');
+const {
+  createTaskValidationSchema,
+  updateTaskValidationSchema,
+} = require('../Utils/validation/taskValidationSchemas');
+
 const {
   getTasks,
   getTaskById,
@@ -12,9 +18,9 @@ router.get('/', getTasks);
 
 router.get('/:id', getTaskById);
 
-router.post('/', createTask);
+router.post('/', validateBody(createTaskValidationSchema), createTask);
 
-router.patch('/:id', updateTask);
+router.patch('/:id', validateBody(updateTaskValidationSchema), updateTask);
 
 router.delete('/:id', deleteTask);
 
