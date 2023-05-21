@@ -8,7 +8,7 @@ const { DB_URI, PORT = 3030 } = process.env;
 (async () => {
   await mongoose.connect(DB_URI);
   console.log('Database connection established successfully');
-  app.listen(3030, () => {
-    console.log('server is running on server 3030');
+  app.listen(PORT, () => {
+    console.log(`Server is running on server ${PORT}`);
   });
 })();

@@ -5,55 +5,38 @@ const {
   updateTaskServices,
   deleteTaskServices,
 } = require('../services/tasksServices');
+const controllerWrapper = require('../Utils/controllerWrapper');
 
-const getTasks = async (req, res, next) => {
-  try {
-    const tasks = await getTasksService();
-    res.status(200).json(tasks);
-  } catch (error) {
-    next(error);
-  }
+let getTasks = async (req, res) => {
+  const { page = 1, limit = 10, completed } = req.query;
+  const tasks = await getTasksService(page, limit, completed);
+  res.status(200).json(tasks);
 };
 
-const getTaskById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const task = await getTaskByIdService(id);
-    res.status(200).json(task);
-  } catch (error) {
-    next(error);
-  }
-};
+getTasks = controllerWrapper(getTasks);
 
-const createTask = async (req, res, next) => {
-  try {
-    const newTask = await createTaskService(req.body);
-    res.status(201).json(newTask);
-  } catch (error) {
-    next(error);
-  }
-};
+const getTaskById = controllerWrapper(async (req, res) => {
+  const { id } = req.params;
+  const task = await getTaskByIdService(id);
+  res.status(200).json(task);
+});
 
-const updateTask = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const updateTask = await updateTaskServices(id, req.body);
-    res.status(200).json(updateTask);
-  } catch (error) {
-    next(error);
-  }
-};
+const createTask = controllerWrapper(async (req, res) => {
+  const newTask = await createTaskService(req.body);
+  res.status(201).json(newTask);
+});
 
-const deleteTask = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    await deleteTaskServices(id);
-    //   res.sendStatus(204);
-    res.status(200).json({ id });
-  } catch (error) {
-    next(error);
-  }
-};
+const updateTask = controllerWrapper(async (req, res) => {
+  const { id } = req.params;
+  const updateTask = await updateTaskServices(id, req.body);
+  res.status(200).json(updateTask);
+});
+
+const deleteTask = controllerWrapper(async (req, res) => {
+  const { id } = req.params;
+  await deleteTaskServices(id);
+  res.status(200).json({ id });
+});
 
 module.exports = {
   getTasks,
